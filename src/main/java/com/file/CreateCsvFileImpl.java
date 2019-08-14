@@ -2,6 +2,9 @@ package com.file;
 
 import com.constants.FieldLength;
 import com.constants.FileHeader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,6 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class CreateCsvFileImpl implements FileOperations{
+    public static Logger log = LoggerFactory.getLogger(CreateCsvFileImpl.class);
     private Properties appProp = null;
     private String inputFilePath = null;
     private String outputFilePath = null;
@@ -27,12 +31,13 @@ public class CreateCsvFileImpl implements FileOperations{
     }
 
     public List<String> readFromTextFile(){
+        log.info("Reading file "+inputFilePath);
         List<String> fileModelList = new ArrayList<String>();
         try {
             fileModelList.add(getHeaderNames());
+            log.debug("Header Names: "+fileModelList);
 
             Stream<String> lines = Files.lines(Paths.get(inputFilePath));
-            System.out.println("<!-----Read all lines as a Stream-----!>");
             lines.forEach(line ->{
                 StringBuffer tempBuffer = new StringBuffer();
                 tempBuffer.append(line.substring(FieldLength.CLIENT_INFORMATION_START.getValue(),
@@ -47,13 +52,11 @@ public class CreateCsvFileImpl implements FileOperations{
                 tempBuffer.append(String.valueOf(Integer.parseInt(quantityLong)-Integer.parseInt(quantityShort))).append(newFieldLine);
 
                 fileModelList.add(tempBuffer.toString());
+                log.debug("Data from input file: "+fileModelList);
             });
             lines.close();
-
-
-            fileModelList.forEach(f -> System.out.println(f.toString()));
         } catch(IOException io) {
-            io.printStackTrace();
+            log.error("Error reading file", io);
         }
 
         return fileModelList;
@@ -68,14 +71,13 @@ public class CreateCsvFileImpl implements FileOperations{
     }
 
     public void createFile(List<String> fileModelList){
-        //Get the file reference
         Path path = Paths.get(outputFilePath);
         try
         {
-
             Files.write(path,fileModelList);
+            log.info("CSV file successfully created at the location: "+outputFilePath);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error creating file", e);
         }
     }
 }
