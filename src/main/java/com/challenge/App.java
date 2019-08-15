@@ -1,6 +1,7 @@
 package com.challenge;
 
 import com.file.CreateCsvFileImpl;
+import com.file.FileOperations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,9 +18,8 @@ public class App {
     public static void main( String[] args )
     {
         log.info("Starting the App");
-        CreateCsvFileImpl readFile = new CreateCsvFileImpl(loadPropertiesFile());
-        List<String> fileModelList = readFile.readFromTextFile();
-        readFile.createFile(fileModelList);
+        FileOperations readFile = new CreateCsvFileImpl(loadPropertiesFile());
+        readFile.createFile();
     }
 
     public static Properties loadPropertiesFile(){

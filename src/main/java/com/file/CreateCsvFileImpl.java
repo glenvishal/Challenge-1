@@ -2,9 +2,11 @@ package com.file;
 
 import com.constants.FieldLength;
 import com.constants.FileHeader;
+import com.model.FileModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -30,7 +32,7 @@ public class CreateCsvFileImpl implements FileOperations{
         this.outputFilePath = appProp.getProperty("file.path.output");
     }
 
-    public List<String> readFromTextFile(){
+    /*public List<String> readFromTextFile(){
         log.info("Reading file "+inputFilePath);
         List<String> fileModelList = new ArrayList<String>();
         try {
@@ -60,23 +62,33 @@ public class CreateCsvFileImpl implements FileOperations{
         }
 
         return fileModelList;
-    }
+    }*/
 
     private String getHeaderNames(){
         StringBuffer tempBuffer = new StringBuffer();
-        tempBuffer.append(FileHeader.CLIENT_INFORMATION.getHeaderName()).append(fieldSeperator);
-        tempBuffer.append(FileHeader.PRODUCT_INFORMATION.getHeaderName()).append(fieldSeperator);
-        tempBuffer.append(FileHeader.TOTAL_TRANSACTION_AMOUNT.getHeaderName()).append(newFieldLine);
+        tempBuffer.append(String.join(fieldSeperator, FileHeader.CLIENT_INFORMATION.getHeaderName(),
+                FileHeader.PRODUCT_INFORMATION.getHeaderName(), FileHeader.TOTAL_TRANSACTION_AMOUNT.getHeaderName()));
+        tempBuffer.append(newFieldLine);
         return tempBuffer.toString();
     }
 
-    public void createFile(List<String> fileModelList){
+    public void createFile(){
+        List<FileModel> fileModelList = readFromTextFile(inputFilePath);
         Path path = Paths.get(outputFilePath);
-        try
-        {
-            Files.write(path,fileModelList);
+        try(BufferedWriter bufferedWriter = Files.newBufferedWriter(path)){
+            bufferedWriter.append(getHeaderNames());
+            fileModelList.forEach(f ->{
+                int totalTransactionAmt = Integer.parseInt(f.getQuantityLong())-Integer.parseInt(f.getQuantityShort());
+                try {
+                    bufferedWriter.append(String.join(fieldSeperator, f.getClientInformation(), f.getProductInformation(),
+                            String.valueOf(totalTransactionAmt)));
+                    bufferedWriter.append(newFieldLine);
+                } catch (IOException e) {
+                    log.error("Error creating file", e);
+                }
+            });
             log.info("CSV file successfully created at the location: "+outputFilePath);
-        } catch (IOException e) {
+        }catch (IOException e) {
             log.error("Error creating file", e);
         }
     }

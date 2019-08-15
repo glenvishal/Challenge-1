@@ -18,7 +18,7 @@ import static org.junit.Assert.assertTrue;
 
 public class CreateCsvFileImplTest {
     private static final String value = "315CL  432100020001SGXDC FUSGX NK    20100910JPY01B 0000000001 0000000000000000000060DUSD000000000030DUSD000000000000DJPY201008200012380     688032000092500000000             O";
-    CreateCsvFileImpl cvsFile;
+    FileOperations cvsFile;
     String inputPath;
     String outputPath;
 
@@ -49,8 +49,7 @@ public class CreateCsvFileImplTest {
     @Test
     public void testFileHeaderNames()
     {
-        List<String> fileVal = cvsFile.readFromTextFile();
-        cvsFile.createFile(fileVal);
+        cvsFile.createFile();
         try {
             Stream<String> lines = Files.lines(Paths.get(outputPath));
             String[] headers = lines.findFirst().get().trim().replaceAll("\n ", "").split(",");
@@ -66,13 +65,12 @@ public class CreateCsvFileImplTest {
     @Test
     public void testFileValues()
     {
-        List<String> fileVal = cvsFile.readFromTextFile();
-        cvsFile.createFile(fileVal);
+        cvsFile.createFile();
         try {
             Stream<String> lines = Files.lines(Paths.get(outputPath));
 
             String[] values = lines.toArray(String[]::new);
-            String[] lineValues = values[2].trim().replaceAll("\n ", "").split(",");
+            String[] lineValues = values[1].trim().replaceAll("\n ", "").split(",");
 
             assertThat(lineValues[0], is(value.substring(FieldLength.CLIENT_INFORMATION_START.getValue(),
                     FieldLength.CLIENT_INFORMATION_END.getValue())));
