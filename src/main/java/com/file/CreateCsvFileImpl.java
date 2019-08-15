@@ -32,37 +32,6 @@ public class CreateCsvFileImpl implements FileOperations{
         this.outputFilePath = appProp.getProperty("file.path.output");
     }
 
-    /*public List<String> readFromTextFile(){
-        log.info("Reading file "+inputFilePath);
-        List<String> fileModelList = new ArrayList<String>();
-        try {
-            fileModelList.add(getHeaderNames());
-            log.debug("Header Names: "+fileModelList);
-
-            Stream<String> lines = Files.lines(Paths.get(inputFilePath));
-            lines.forEach(line ->{
-                StringBuffer tempBuffer = new StringBuffer();
-                tempBuffer.append(line.substring(FieldLength.CLIENT_INFORMATION_START.getValue(),
-                        FieldLength.CLIENT_INFORMATION_END.getValue())).append(fieldSeperator);
-                tempBuffer.append(line.substring(FieldLength.PRODUCT_INFORMATION_START.getValue(),
-                        FieldLength.PRODUCT_INFORMATION_END.getValue())).append(fieldSeperator);
-
-                String quantityLong = line.substring(FieldLength.QUANTITY_LONG_START.getValue(),
-                        FieldLength.QUANTITY_LONG_END.getValue());
-                String quantityShort = line.substring(FieldLength.QUANTITY_SHORT_START.getValue(),
-                        FieldLength.QUANTITY_SHORT_END.getValue());
-                tempBuffer.append(String.valueOf(Integer.parseInt(quantityLong)-Integer.parseInt(quantityShort))).append(newFieldLine);
-
-                fileModelList.add(tempBuffer.toString());
-                log.debug("Data from input file: "+fileModelList);
-            });
-            lines.close();
-        } catch(IOException io) {
-            log.error("Error reading file", io);
-        }
-
-        return fileModelList;
-    }*/
 
     private String getHeaderNames(){
         StringBuffer tempBuffer = new StringBuffer();
@@ -87,6 +56,7 @@ public class CreateCsvFileImpl implements FileOperations{
                     log.error("Error creating file", e);
                 }
             });
+            bufferedWriter.close();
             log.info("CSV file successfully created at the location: "+outputFilePath);
         }catch (IOException e) {
             log.error("Error creating file", e);

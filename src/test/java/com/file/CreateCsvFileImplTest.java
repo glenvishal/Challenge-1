@@ -2,6 +2,7 @@ package com.file;
 
 import com.constants.FieldLength;
 import com.constants.FileHeader;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -44,6 +45,17 @@ public class CreateCsvFileImplTest {
             e.printStackTrace();
         }
         cvsFile = new CreateCsvFileImpl(appProps);
+    }
+
+    @After
+    public void tearDown() {
+
+        try {
+            Files.delete(Paths.get(inputPath));
+            Files.delete(Paths.get(outputPath));
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
     }
 
     @Test
