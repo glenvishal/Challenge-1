@@ -1,21 +1,18 @@
 package com.file;
 
-import com.constants.FieldLength;
-import com.constants.FileHeader;
-import com.model.FileModel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
+import com.constants.FileHeader;
+import com.model.FileModel;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CreateCsvFileImpl implements FileOperations{
     public static Logger log = LoggerFactory.getLogger(CreateCsvFileImpl.class);

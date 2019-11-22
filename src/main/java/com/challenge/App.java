@@ -1,15 +1,15 @@
 package com.challenge;
 
-import com.file.CreateCsvFileImpl;
-import com.file.FileOperations;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.List;
 import java.util.Properties;
+
+import com.file.CreateCsvFileImpl;
+import com.file.FileOperations;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class App {
